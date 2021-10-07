@@ -89,7 +89,7 @@ public class JdbcRepository implements CustomerRepository {
     public void delete(Customer customer) {
         try {
             PreparedStatement statement = connection.prepareStatement(
-                    "delete from CUSTOMER where EMAIL = ?"
+                    "delete from CUSTOMER where email = ?"
             );
             statement.setString(1, customer.getEmail());
             statement.execute();
