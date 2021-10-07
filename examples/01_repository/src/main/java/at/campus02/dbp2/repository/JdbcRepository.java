@@ -73,7 +73,7 @@ public class JdbcRepository implements CustomerRepository {
         try {
             PreparedStatement statement = connection.prepareStatement(
                     "update CUSTOMER" +
-                            "set lastname = ?, firstname = ?" +
+                            "set lastname = ?, firstname = ? " +
                             "where email = ?"
             );
             statement.setString(1, customer.getLastname());
