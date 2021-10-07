@@ -9,7 +9,9 @@ public class Application {
     public static void main(String[] args) {
         log("application started");
 
-        CustomerRepository repository = new JdbcRepository("jdbc:derby:database;create=true");
+        //CustomerRepository repository = new InMemoryRepository();
+        //CustomerRepository repository = new JdbcRepository("jdbc:derby:database;create=true");
+        CustomerRepository repository = new JpaRepository();
 
         Customer customer = new Customer();
         customer.setEmail("customer1@customer.com");
