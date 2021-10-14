@@ -1,5 +1,6 @@
 package at.campus02.dbp2.mappings;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +39,13 @@ public class CustomerRepositoryCrudSpec {
         factory = Persistence.createEntityManagerFactory("persistenceUnitName");
         manager = factory.createEntityManager();
         repository = new CustomerRepositoryJpa(factory);
+    }
+    @AfterEach
+    public void afterEach(){
+        if (manager.isOpen())
+            manager.close();
+        if (factory.isOpen())
+            factory.close();
     }
     //#endregion
 
