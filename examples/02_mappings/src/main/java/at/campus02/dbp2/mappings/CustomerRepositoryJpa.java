@@ -50,7 +50,15 @@ public class CustomerRepositoryJpa implements CustomerRepository{
 
     @Override
     public boolean delete(Customer customer) {
-        return false;
+        if (customer == null)
+            return false;
+        if (customer.getId() == null || read(customer.getId()) == null){
+            throw new IllegalArgumentException("Customer does not exist, cannot updated");
+        }
+        manager.getTransaction().begin();
+        manager.remove(manager.merge(customer));
+        manager.getTransaction().commit();
+        return true;
     }
 
     @Override

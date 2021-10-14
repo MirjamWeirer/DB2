@@ -193,4 +193,43 @@ public class CustomerRepositoryCrudSpec {
         assertNull(updated);
     }
     //#endregion
+
+    //#region CRUD: delete
+    @Test
+    public void deleteRemovesCustomerFromDatabaseAndReturnsTrue(){
+        //given
+        Customer existing = initDefaultCustomer();
+
+        manager.getTransaction().begin();
+        manager.persist(existing);
+        manager.getTransaction().commit();
+
+        //when
+        boolean result = repository.delete(existing);
+
+        //then
+        assertTrue(result);
+        manager.clear();
+        Customer hopefullyDeleted = manager.find(Customer.class, existing.getId());
+        assertNull(hopefullyDeleted);
+    }
+
+    @Test
+    public void deleteNotExistingCustomerThrowsIllegalArgumentException(){
+        //given
+        Customer notExisting = initDefaultCustomer();
+
+        //when /then
+        assertThrows(IllegalArgumentException.class, () -> repository.delete(notExisting));
+    }
+
+    @Test
+    public void deleteNullAsCustomerReturnsFalse(){
+        //when
+        boolean result = repository.delete(null);
+
+        //then
+        assertFalse(result);
+    }
+    //#endregion
 }
