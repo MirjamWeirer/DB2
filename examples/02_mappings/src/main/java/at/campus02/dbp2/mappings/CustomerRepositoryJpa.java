@@ -39,7 +39,7 @@ public class CustomerRepositoryJpa implements CustomerRepository{
     public Customer update(Customer customer) {
         if (customer == null)
             return null;
-        if (customer.getId() == null || read(customer.getId()) == null){
+        if (read(customer.getId()) == null){
             throw new IllegalArgumentException("Customer does not exist, cannot updated");
         }
         manager.getTransaction().begin();
