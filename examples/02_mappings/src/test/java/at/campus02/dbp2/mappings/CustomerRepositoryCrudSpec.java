@@ -1,9 +1,5 @@
 package at.campus02.dbp2.mappings;
 
-import at.campus02.dbp2.mappings.AccountType;
-import at.campus02.dbp2.mappings.Customer;
-import at.campus02.dbp2.mappings.CustomerRepository;
-import at.campus02.dbp2.mappings.CustomerRepositoryJpa;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
