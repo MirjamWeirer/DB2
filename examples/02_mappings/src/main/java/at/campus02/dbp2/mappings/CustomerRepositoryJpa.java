@@ -37,7 +37,15 @@ public class CustomerRepositoryJpa implements CustomerRepository{
 
     @Override
     public Customer update(Customer customer) {
-        return null;
+        if (customer == null)
+            return null;
+        if (customer.getId() == null || read(customer.getId()) == null){
+            throw new IllegalArgumentException("Customer does not exist, cannot updated");
+        }
+        manager.getTransaction().begin();
+        Customer manged =manager.merge(customer);
+        manager.getTransaction().commit();
+        return manged;
     }
 
     @Override
