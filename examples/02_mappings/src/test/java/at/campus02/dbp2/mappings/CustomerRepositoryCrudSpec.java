@@ -4,6 +4,7 @@ import at.campus02.dbp2.mappings.AccountType;
 import at.campus02.dbp2.mappings.Customer;
 import at.campus02.dbp2.mappings.CustomerRepository;
 import at.campus02.dbp2.mappings.CustomerRepositoryJpa;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
@@ -16,14 +17,37 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CustomerRepositoryCrudSpec {
+    //#region test data
+    private final String firstname = "Firstname";
+    private final String lastname = "Lastname";
+    private final AccountType accountType = AccountType.BASIC;
+    private final LocalDate registeredSince = LocalDate.now();
 
+    private Customer initDefaultCustomer(){
+        Customer customer = new Customer();
+        customer.setFirstname(firstname);
+        customer.setLastname(lastname);
+        customer.setRegisteredSince(registeredSince);
+        customer.setAccountType(accountType);
+        return customer;
+    }
+    //#endregion
+
+    //#region setup / tear down
+    private EntityManagerFactory factory;
+    private EntityManager manager;
+    private CustomerRepository repository;
+    @BeforeEach
+    public void beforeEach(){
+        factory = Persistence.createEntityManagerFactory("persistenceUnitName");
+        manager = factory.createEntityManager();
+        repository = new CustomerRepositoryJpa(factory);
+    }
+    //#endregion
+
+    //#region CRUD: create
     @Test
     public void createNullAsCustomerReturnFalse(){
-        //given
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("persistenceUnitName");
-        CustomerRepository repository = new CustomerRepositoryJpa(factory);
-
-
         //when
         boolean result = repository.create(null);
 
@@ -34,18 +58,7 @@ public class CustomerRepositoryCrudSpec {
     @Test
     public void createPersistsCustomerInDatabaseAndReturnsTrue(){
         //given
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("persistenceUnitName");
-        CustomerRepository repository = new CustomerRepositoryJpa(factory);
-
-        String firstname = "Firstname";
-        String lastname = "Lastname";
-        AccountType accountType = AccountType.BASIC;
-        LocalDate registeredSince = LocalDate.now();
-        Customer toCreate = new Customer();
-        toCreate.setFirstname(firstname);
-        toCreate.setLastname(lastname);
-        toCreate.setRegisteredSince(registeredSince);
-        toCreate.setAccountType(accountType);
+        Customer toCreate = initDefaultCustomer();
 
         //when
         boolean result = repository.create(toCreate);
@@ -64,20 +77,8 @@ public class CustomerRepositoryCrudSpec {
     @Test
     public void createExistingCustomerReturnFalse(){
         //given
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("persistenceUnitName");
-        CustomerRepository repository = new CustomerRepositoryJpa(factory);
+        Customer toCreate = initDefaultCustomer();
 
-        String firstname = "Firstname";
-        String lastname = "Lastname";
-        AccountType accountType = AccountType.BASIC;
-        LocalDate registeredSince = LocalDate.now();
-        Customer toCreate = new Customer();
-        toCreate.setFirstname(firstname);
-        toCreate.setLastname(lastname);
-        toCreate.setRegisteredSince(registeredSince);
-        toCreate.setAccountType(accountType);
-
-        EntityManager manager = factory.createEntityManager();
         manager.getTransaction().begin();
         manager.persist(toCreate);
         manager.getTransaction().commit();
@@ -88,4 +89,5 @@ public class CustomerRepositoryCrudSpec {
         //then
         assertFalse(result);
     }
+    //#endregion
 }
