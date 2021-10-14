@@ -30,7 +30,9 @@ public class CustomerRepositoryJpa implements CustomerRepository{
 
     @Override
     public Customer read(Integer id) {
-        return null;
+        if (id == null)
+            return null;
+        return manager.find(Customer.class,id);
     }
 
     @Override

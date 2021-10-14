@@ -94,4 +94,44 @@ public class CustomerRepositoryCrudSpec {
         assertFalse(result);
     }
     //#endregion
+
+    //#region CRUD: read
+    @Test
+    public void readFindsCustomerInDatabase(){
+        //given
+        Customer existing = initDefaultCustomer();
+
+        manager.getTransaction().begin();
+        manager.persist(existing);
+        manager.getTransaction().commit();
+
+        //when
+        Customer fromRepository = repository.read(existing.getId());
+
+        //then
+        assertEquals(existing.getId(),fromRepository.getId());
+        assertEquals(firstname, fromRepository.getFirstname());
+        assertEquals(lastname, fromRepository.getLastname());
+        assertEquals(accountType, fromRepository.getAccountType());
+        assertEquals(registeredSince, fromRepository.getRegisteredSince());
+    }
+
+    @Test
+    public void readWithNotExistingIdReturnsNull(){
+        //when
+        Customer fromRepository = repository.read(-1);
+
+        //then
+        assertNull(fromRepository);
+    }
+
+    @Test
+    public void readWithNullAsIdReturnsNull(){
+        //when
+        Customer fromRepository = repository.read(null);
+
+        //then
+        assertNull(fromRepository);
+    }
+    //#endregion
 }
