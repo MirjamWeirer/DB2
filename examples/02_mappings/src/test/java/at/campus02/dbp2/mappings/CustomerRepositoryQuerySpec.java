@@ -214,14 +214,23 @@ public class CustomerRepositoryQuerySpec {
     }
     //#endregion
 
-    //#region Query: findByRegistrySince
-//    @Test
-//    public void findByRegisteredSinceReturnsCustomerList(){
-//        //given
-//        setupCommonTestdata();
-//
-//        //when
-//        List<Customer> customerSince = repository.findAllRegisteredAfter(LocalDate.of(2021,5,5));
-//    }
+    //#region Query: findByRegisteredAfter
+    @Test
+    public void findByRegisteredSinceReturnsCustomerList(){
+        //given
+        setupCommonTestdata();
+
+        //when
+        List<Customer> customerSince = repository.findAllRegisteredAfter(LocalDate.of(2021,4,4));
+
+        //then
+        assertThat(customerSince,containsInAnyOrder(customer5,customer6,customer7));
+
+        //and when
+        customerSince = repository.findAllRegisteredAfter(LocalDate.of(2021,4,3));
+
+        //then
+        assertThat(customerSince,containsInAnyOrder(customer4, customer5,customer6,customer7));
+    }
     //#endregion
 }

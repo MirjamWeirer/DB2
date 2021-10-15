@@ -3,15 +3,25 @@ package at.campus02.dbp2.mappings;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
-@NamedQuery(
-        name = "Customer.findByLastnamePart",
-        query = "select c from Customer c " +
-                    "where lower(c.lastname)  like lower(:lastnamePart) " +
-                    "order by c.lastname")
+
+@NamedQueries({
+        @NamedQuery(
+                name = "Customer.findByLastnamePart",
+                query = "select c from Customer c " +
+                        "where lower(c.lastname)  like lower(:lastnamePart) " +
+                        "order by c.lastname"),
+        @NamedQuery(
+                name = "Customer.RegisteredAfter",
+                query = "select c from Customer c " +
+                        "where c.registeredSince > :date"
+        )
+})
+
 @Entity
 public class Customer {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Integer id;
     private String firstname;
     private String lastname;
