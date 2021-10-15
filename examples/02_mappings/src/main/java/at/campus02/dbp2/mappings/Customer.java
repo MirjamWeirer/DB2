@@ -1,5 +1,6 @@
 package at.campus02.dbp2.mappings;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,6 +15,7 @@ public class Customer {
     private String firstname;
     private String lastname;
     private LocalDate registeredSince;
+    @Column(nullable = false)
     private AccountType accountType;
 
     public Integer getId() {

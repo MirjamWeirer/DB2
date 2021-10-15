@@ -137,8 +137,6 @@ public class CustomerRepositoryQuerySpec {
         List<Customer> premium = repository.findByAccountType(AccountType.PREMIUM);
 
         //then
-
-
         assertThat(basic, containsInAnyOrder(customer1,customer6,customer7));
         assertThat(premium, containsInAnyOrder(customer2,customer3,customer4,customer5));
 
@@ -156,5 +154,18 @@ public class CustomerRepositoryQuerySpec {
 //                        && premium.containsAll(expectedPremium)
 //        );
     }
+
+    @Test
+    public void findByAccountTypeNullReturnsEmptyList(){
+        //given
+        setupCommonTestdata();
+
+        //when
+        List<Customer> result = repository.findByAccountType(null);
+
+        //then
+        assertThat(result, is(empty()));
+    }
+
 
 }
