@@ -99,7 +99,7 @@ public class CustomerRepositoryQuerySpec {
         if (factory.isOpen())
             factory.close();
     }
-
+    //#region Query: getAllCustomers
     @Test
     public void getAllCustomersReturnsAllCustomerFromDbSortedByRegistrationsDate(){
         //given
@@ -126,7 +126,9 @@ public class CustomerRepositoryQuerySpec {
         assertThat(sortedCustomers, is(empty()));
         //assertTrue(sortedCustomers.isEmpty());
     }
+    //#endregion
 
+    //#region Query: findByAccountType
     @Test
     public void findByAccountTypeReturnsMatchingCustomers(){
         //given
@@ -166,6 +168,60 @@ public class CustomerRepositoryQuerySpec {
         //then
         assertThat(result, is(empty()));
     }
+    //#endregion
 
+    //#region Query: findByLastname
+    @Test
+    public void findByLastnameReturnsMatchingCustomers(){
+        //given
+        setupCommonTestdata();
 
+        //when
+        List<Customer> matching = repository.findByLastname("aie");
+
+        //then
+        assertThat(matching, contains(customer6,customer7));
+    }
+
+    @Test
+    public void findByLastnameReturnsCaseInsensitivelyMatchingCustomers(){
+        //given
+        setupCommonTestdata();
+
+        //when
+        List<Customer> matching = repository.findByLastname("mAIe");
+
+        //then
+        assertThat(matching, contains(customer6,customer7));
+    }
+
+    @Test
+    public void findByLastnameWithNullOrEmptyStringReturnsEmptyList(){
+        //given
+        setupCommonTestdata();
+
+        //when
+        List<Customer> matching = repository.findByLastname("");
+
+        //then
+        assertThat(matching, is(empty()));
+
+        //and when
+        matching = repository.findByLastname(null);
+
+        //then
+        assertThat(matching, is(empty()));
+    }
+    //#endregion
+
+    //#region Query: findByRegistrySince
+//    @Test
+//    public void findByRegisteredSinceReturnsCustomerList(){
+//        //given
+//        setupCommonTestdata();
+//
+//        //when
+//        List<Customer> customerSince = repository.findAllRegisteredAfter(LocalDate.of(2021,5,5));
+//    }
+    //#endregion
 }
