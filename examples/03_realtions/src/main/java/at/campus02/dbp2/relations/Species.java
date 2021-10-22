@@ -12,7 +12,7 @@ public class Species {
     @GeneratedValue
     private Integer id;
     private String name;
-    @OneToMany (mappedBy = "species", cascade = CascadeType.ALL)
+    @OneToMany (mappedBy = "species", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Animal> animals = new ArrayList<>();
 
     public Species() {

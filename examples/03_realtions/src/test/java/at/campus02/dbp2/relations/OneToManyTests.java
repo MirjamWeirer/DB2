@@ -5,6 +5,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
@@ -59,13 +60,14 @@ public class OneToManyTests {
 
         //then
         Species speciesFromDb = manager.find(Species.class, species.getId());
-        assertThat(speciesFromDb.getAnimals(), is(2));
+        assertThat(speciesFromDb.getAnimals().size(), is(2));
         assertThat(speciesFromDb.getAnimals(), containsInAnyOrder(bunny,ivan));
     }
     //#endregion
 
     @Test
-    public void updateExamExampleWithCorrectingReferencnes(){
+    @Disabled("Only works without orphanRemoval - enable after setting orphanRemoval to false")
+    public void updateExamExampleWithCorrectingReferences(){
         //--------------------------------------
         //given
         Animal clownfish = new Animal("Nemo");
@@ -97,7 +99,7 @@ public class OneToManyTests {
         //--------------------------------------
         //then
         //Squirrel existiert noch in DB
-        Animal squirrelFromDb = manager.find(Animal.class, squirrel);
+        Animal squirrelFromDb = manager.find(Animal.class, squirrel.getId());
         assertThat(squirrelFromDb,is(notNullValue()));
 
         // Squirrel ist immer noch Fisch - wir haben im Speicher die Liste von
@@ -122,7 +124,7 @@ public class OneToManyTests {
         //--------------------------------------
         //then
         //Squirrel existiert noch in DB
-        squirrelFromDb = manager.find(Animal.class, squirrel);
+        squirrelFromDb = manager.find(Animal.class, squirrel.getId());
         assertThat(squirrelFromDb,is(notNullValue()));
 
         // Squirrel ist kein Fisch mehr
@@ -134,5 +136,45 @@ public class OneToManyTests {
         mergedFish = manager.merge(fish);
         manager.refresh(mergedFish);
         assertThat(mergedFish.getAnimals().size(),is(1));
+    }
+
+    @Test
+    public void orphanRemovalDeletesOrphansFromDatabase(){
+        //given
+        Animal clownfish = new Animal("Nemo");
+        Animal squirrel = new Animal("Squirrel");
+        Species fish = new Species("Fish");
+
+        //Referenzen für DB
+        clownfish.setSpecies(fish);
+        //Fehler -> korrigieren
+        squirrel.setSpecies(fish);
+
+        //Referenzen für Cascade
+        fish.getAnimals().add(clownfish);
+        fish.getAnimals().add(squirrel);
+
+        //Speichern
+        manager.getTransaction().begin();
+        manager.persist(fish);
+        manager.getTransaction().commit();
+
+        manager.clear();
+        //--------------------------------------
+        //when
+        manager.getTransaction().begin();
+        fish.getAnimals().remove(squirrel);
+        manager.merge(fish);
+        manager.getTransaction().commit();
+
+        manager.clear();
+
+        //then
+        Animal squirrelFromDb = manager.find(Animal.class, squirrel.getId());
+        assertThat(squirrelFromDb, is(nullValue()));
+
+        Species refreshedFish = manager.merge(fish);
+        manager.refresh(refreshedFish);
+        assertThat(refreshedFish.getAnimals().size(),is(1));
     }
 }
